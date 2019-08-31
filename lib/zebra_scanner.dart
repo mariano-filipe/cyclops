@@ -1,12 +1,11 @@
-import 'dart:async';
+library zebra_scanner;
 
-import 'package:flutter/services.dart';
+import 'dart:io' show File;
+import 'dart:typed_data' show Uint8List;
+import 'dart:ui' show Size;
 
-class ZebraScanner {
-  static const MethodChannel _channel = const MethodChannel('zebra_scanner');
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform, required;
+import 'package:flutter/services.dart' show MethodChannel;
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-}
+part 'src/scanner.dart';
+part 'src/image.dart';
