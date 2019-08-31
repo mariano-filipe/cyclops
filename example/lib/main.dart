@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
 
-import 'package:zebra_scanner/zebra_scanner.dart' show ZebraScanner, ZebraScannerVisionImage;
+import 'package:zebra_scanner/zebra_scanner.dart' show ZebraScanner, ZebraScannerOptions, ZebraScannerVisionImage;
 
 void main() => runApp(MyApp());
 
@@ -16,11 +16,17 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   File _image;
-  final _scanner = ZebraScanner();
+  ZebraScanner _scanner;
+  Future _isScannerInitialized;
 
   @override
   void initState() {
     super.initState();
+
+    var options = ZebraScannerOptions();
+    _scanner = ZebraScanner(options);
+    _isScannerInitialized = _scanner.initialize();
+
     initPlatformState();
   }
 
@@ -83,6 +89,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   _onScanImageButtonPressed() async {
+    await _isScannerInitialized;
     var visionImage = ZebraScannerVisionImage.fromFile(_image);
     await _scanner.detectInImage(visionImage);
   }
