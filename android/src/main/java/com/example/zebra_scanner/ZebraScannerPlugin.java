@@ -2,6 +2,8 @@ package com.example.zebra_scanner;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -9,6 +11,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
@@ -23,7 +26,26 @@ import com.google.zxing.RGBLuminanceSource;
 /** ZebraScannerPlugin */
 public class ZebraScannerPlugin implements MethodCallHandler {
   private MultiFormatReader detector = new MultiFormatReader();
-  private com.google.zxing.Result decodingResult;
+  private String barcode;
+
+  private static int exifToDegrees(int exifOrientation) {
+    if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+      return 90;
+    } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+      return 180;
+    } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+      return 270;
+    }
+    return 0;
+  }
+
+  private static Bitmap rotateBitmap(Bitmap sourceBitmap, int rotationInDegrees) {
+    int width = sourceBitmap.getWidth();
+    int height = sourceBitmap.getHeight();
+    Matrix matrix = new Matrix();
+    matrix.preRotate(rotationInDegrees);
+    return Bitmap.createBitmap(sourceBitmap, 0, 0, width, height, matrix, true);
+  }
 
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
@@ -47,19 +69,15 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     this.detector.reset();
   }
 
-  public void detectInImage(MethodCall call) {
-    String imgPath = call.argument("path");
-    // System.out.println("imgPath: " + imgPath);
-    Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
-    // System.out.println("bitmap: " + bitmap.toString());
+  private String detectInBitmap(Bitmap bitmap) {
     int width = bitmap.getWidth();
-    // System.out.println("width: " + Integer.toString(width));
     int height = bitmap.getHeight();
-    // System.out.println("height: " + Integer.toString(height));
+    // System.out.println("width: " + width);
+    // System.out.println("height: " + height);
+
     int[] pixels = new int[width * height];
     bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
     // System.out.println("pixels.length: " + Integer.toString(pixels.length));
-    // System.out.println("pixels[100]: " + Integer.toString(pixels[100]));
     // System.out.println("pixels: " + pixels.toString());
 
     RGBLuminanceSource luminanceSource = new RGBLuminanceSource(width, height, pixels);
@@ -69,12 +87,38 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
     // System.out.println("binaryBitmap:" + binaryBitmap.toString());
     // System.out.println("detector:" + detector.toString());
+
+    com.google.zxing.Result result;
     try {
-      this.decodingResult = detector.decodeWithState(binaryBitmap);
+      result = detector.decodeWithState(binaryBitmap);
     } catch (NotFoundException e) {
-      this.decodingResult = null;
+      result = null;
     }
-    System.out.println("decodingResult:" + (decodingResult != null ? decodingResult.toString() : null));
+
+    String barcode = result != null ? result.getText() : null;
+    System.out.println("decodingResult:" + barcode);
+    return barcode;
+  }
+
+  public void detectInImage(MethodCall call) {
+    Bitmap bitmap = null;
+    String imgType = call.argument("type");
+    // System.out.println("imgType: " + imgType);
+
+    if (imgType.equals("file")) {
+      String imgPath = call.argument("path");
+      // System.out.println("imgPath: " + imgPath);
+      bitmap = BitmapFactory.decodeFile(imgPath);
+    }
+
+    this.barcode = this.detectInBitmap(bitmap);
+
+    // If barcode is null, try again in opposite orientation (horizontal <->
+    // vertical)
+    if (this.barcode == null) {
+      bitmap = rotateBitmap(bitmap, 90);
+      this.barcode = this.detectInBitmap(bitmap);
+    }
   }
 
   @Override
@@ -90,8 +134,7 @@ public class ZebraScannerPlugin implements MethodCallHandler {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
     } else if (call.method.equals("detectInImage")) {
       this.detectInImage(call);
-      String ret = this.decodingResult != null ? this.decodingResult.getText() : null;
-      result.success(Arrays.asList(ret));
+      result.success(Arrays.asList(this.barcode));
     } else if (call.method.equals("initialize")) {
       this.initialize(call);
       result.success("foo");
