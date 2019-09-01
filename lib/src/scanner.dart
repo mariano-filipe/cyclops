@@ -17,13 +17,12 @@ class ZebraScanner {
     _isInitialized = true;
   }
 
-  Future<void> detectInImage(ZebraScannerVisionImage image) async {
+  Future<String> detectInImage(ZebraScannerVisionImage image) async {
     assert(_isInitialized, "the scanner was instantiated but not initialized");
-    print("image.serialize: ${image.serialize()}");
+    // print("image.serialize: ${image.serialize()}");
 
     final List<dynamic> reply = await _channel.invokeListMethod('detectInImage', image.serialize());
-    print("reply: $reply");
-    return null;
+    return reply[0];
   }
 
   Future<void> close() async {

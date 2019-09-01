@@ -31,6 +31,19 @@ class ZebraScannerVisionImage {
     );
   }
 
+  factory ZebraScannerVisionImage.fromBytes(
+    Uint8List bytes,
+    ZebraScannerVisionImageMetadata metadata,
+  ) {
+    assert(bytes != null);
+    assert(metadata != null);
+    return ZebraScannerVisionImage._(
+      type: _ImageType.bytes,
+      bytes: bytes,
+      metadata: metadata,
+    );
+  }
+
   final Uint8List _bytes;
   final File _imageFile;
   final ZebraScannerVisionImageMetadata _metadata;
@@ -91,14 +104,19 @@ class ZebraScannerVisionImageMetadata {
 class ZebraScannerVisionImagePlaneMetadata {
   ZebraScannerVisionImagePlaneMetadata({
     @required this.bytesPerRow,
+    this.bytesPerPixel,
     @required this.height,
     @required this.width,
   })  : assert(defaultTargetPlatform == TargetPlatform.iOS ? bytesPerRow != null : true),
+        assert(defaultTargetPlatform == TargetPlatform.android ? bytesPerPixel != null : true),
         assert(defaultTargetPlatform == TargetPlatform.iOS ? height != null : true),
         assert(defaultTargetPlatform == TargetPlatform.iOS ? width != null : true);
 
   /// The row stride for this color plane, in bytes.
   final int bytesPerRow;
+
+  /// The pixel stride for this color plane, in bytes.
+  final int bytesPerPixel;
 
   /// Height of the pixel buffer on iOS.
   final int height;
@@ -108,6 +126,7 @@ class ZebraScannerVisionImagePlaneMetadata {
 
   Map<String, dynamic> _serialize() => <String, dynamic>{
         'bytesPerRow': bytesPerRow,
+        'bytesPerPixel': bytesPerPixel,
         'height': height,
         'width': width,
       };
