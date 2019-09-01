@@ -35,12 +35,11 @@ class ScannerUtils {
   }
 
   static Uint8List _concatenatePlanes(List<Plane> planes) {
-    // final WriteBuffer allBytes = WriteBuffer();
-    // for (Plane plane in planes) {
-    //   allBytes.putUint8List(plane.bytes);
-    // }
-    // return allBytes.done().buffer.asUint8List();
-    return planes[0].bytes;
+    final WriteBuffer allBytes = WriteBuffer();
+    for (Plane plane in planes) {
+      allBytes.putUint8List(plane.bytes);
+    }
+    return allBytes.done().buffer.asUint8List();
   }
 
   static ZebraScannerVisionImageMetadata _buildMetaData(
