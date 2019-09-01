@@ -32,7 +32,11 @@ class ZebraScanner {
 }
 
 class ZebraScannerOptions {
-  Map<String, dynamic> serialize() {
-    return null;
-  }
+  final barcodeFormats;
+
+  ZebraScannerOptions({this.barcodeFormats = BarcodeFormat.all});
+
+  Map<String, dynamic> serialize() => <String, dynamic>{
+        'barcodeFormats': barcodeFormats.value,
+      };
 }

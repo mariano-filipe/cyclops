@@ -9,3 +9,4 @@ import 'package:flutter/services.dart' show MethodChannel;
 
 part 'src/scanner.dart';
 part 'src/image.dart';
+part 'src/barcode.dart';

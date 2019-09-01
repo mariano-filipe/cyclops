@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
 
 import 'package:zebra_scanner/zebra_scanner.dart'
-    show ZebraScanner, ZebraScannerOptions, ZebraScannerVisionImage;
+    show ZebraScanner, ZebraScannerOptions, ZebraScannerVisionImage, BarcodeFormat;
 import 'package:zebra_scanner_example/scanner_utils.dart' show ScannerUtils;
 
 void main() => runApp(MyApp());
@@ -28,7 +28,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    var options = ZebraScannerOptions();
+    var options = ZebraScannerOptions(
+      barcodeFormats: BarcodeFormat.all,
+    );
     _scanner = ZebraScanner(options);
     _isScannerInitialized = _scanner.initialize();
 

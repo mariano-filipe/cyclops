@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 
-// import com.google.zxing.BarcodeFormat; // [FUTURE]
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
@@ -28,16 +27,13 @@ public class ZebraScannerPlugin implements MethodCallHandler {
   private Decoder decoder = new Decoder();
   private String barcode;
 
+  // [FIX] Add more hints to the detector so that it can perform better in more
+  // restricted scenarios. The [options] arguments should be used for that.
   public void initialize(MethodCall call) {
-    // Map options = call.argument("options");
-    // String optionsStringified = options != null ? options.toString() : null;
+    int allowedFormats = call.argument("barcodeFormats");
+    Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>(2);
 
-    // [FIX] Add more hints to the detector so that it can perform better in more
-    // restricted
-    // scenarios. The [options] arguments should be used for that.
-    Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>(1);
-    // hints.put(DecodeHintType.POSSIBLE_FORMATS,
-    // Arrays.asList(BarcodeFormat.EAN_13));
+    hints.put(DecodeHintType.POSSIBLE_FORMATS, BarcodeFormat.enumerateFromInt(allowedFormats));
     hints.put(DecodeHintType.CHARACTER_SET, "UTF8");
     this.detector.setHints(hints);
   }
@@ -95,8 +91,8 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     // vertical)
     // [FIX] Try to find a better way of approaching this situation.
     // if (this.barcode == null) {
-    //   bitmap = Utils.rotateBitmap(bitmap, 90);
-    //   this.barcode = this.detectInBitmap(bitmap);
+    // bitmap = Utils.rotateBitmap(bitmap, 90);
+    // this.barcode = this.detectInBitmap(bitmap);
     // }
   }
 
@@ -116,7 +112,8 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     // String argsClassname = argsClass != null ? argsClass.toString() : null;
     // String argsStringified = args != null ? args.toString() : null;
     // System.out.println("Calling method: " + call.method);
-    // System.out.println("The arguments (" + argsClassname + ") are:" + argsStringified);
+    // System.out.println("The arguments (" + argsClassname + ") are:" +
+    // argsStringified);
 
     if (call.method.equals("detectInImage")) {
       this.detectInImage(call);
