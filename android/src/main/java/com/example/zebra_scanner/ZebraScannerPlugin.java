@@ -4,6 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 // import android.Manifest;  // [DEBUG]
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -14,18 +21,10 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.RGBLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
-
 /** ZebraScannerPlugin */
 public class ZebraScannerPlugin implements MethodCallHandler {
   private MultiFormatReader detector = new MultiFormatReader();
   private Decoder decoder = new Decoder();
-  private String barcode;
 
   // [FIX] Add more hints to the detector so that it can perform better in more
   // restricted scenarios. The [options] arguments should be used for that.
@@ -44,7 +43,7 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     this.detector.reset();
   }
 
-  private String detectInPixels(int[] pixels, int width, int height) {
+  private Map<String, Object> detectInPixels(int[] pixels, int width, int height) {
     RGBLuminanceSource luminanceSource = new RGBLuminanceSource(width, height, pixels);
     HybridBinarizer binarizer = new HybridBinarizer(luminanceSource);
     BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
@@ -56,12 +55,10 @@ public class ZebraScannerPlugin implements MethodCallHandler {
       result = null;
     }
 
-    // [FIX] Check if zxing library can detect more than one barcode at the same
-    // time.
-    return result != null ? result.getText() : null;
+    return Utils.encodeResult(result);
   }
 
-  private String detectInBitmap(Bitmap bitmap) {
+  private Map<String, Object> detectInBitmap(Bitmap bitmap) {
     int width = bitmap.getWidth();
     int height = bitmap.getHeight();
 
@@ -71,29 +68,23 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     return this.detectInPixels(pixels, width, height);
   }
 
-  public void detectInImage(MethodCall call) {
+  public Map<String, Object> detectInImage(MethodCall call) {
     String imgType = call.argument("type");
 
     if (imgType.equals("file")) {
       String imgPath = call.argument("path");
 
       Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
-      this.barcode = this.detectInBitmap(bitmap);
+      return this.detectInBitmap(bitmap);
     } else if (imgType.equals("bytes")) {
       byte[] bytes = call.argument("bytes");
       Map<String, Object> metadata = call.argument("metadata");
 
       DecodedImage image = decoder.decode(bytes, metadata);
-      this.barcode = this.detectInPixels(image.pixels, image.width, image.height);
+      return this.detectInPixels(image.pixels, image.width, image.height);
     }
 
-    // If barcode is null, try again in opposite orientation (horizontal <->
-    // vertical)
-    // [FIX] Try to find a better way of approaching this situation.
-    // if (this.barcode == null) {
-    // bitmap = Utils.rotateBitmap(bitmap, 90);
-    // this.barcode = this.detectInBitmap(bitmap);
-    // }
+    return null;
   }
 
   /** Plugin registration. */
@@ -116,8 +107,8 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     // argsStringified);
 
     if (call.method.equals("detectInImage")) {
-      this.detectInImage(call);
-      result.success(Arrays.asList(this.barcode));
+      Map<String, Object> data = this.detectInImage(call);
+      result.success(data);
     } else if (call.method.equals("initialize")) {
       this.initialize(call);
       result.success(null);

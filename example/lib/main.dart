@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
 
 import 'package:zebra_scanner/zebra_scanner.dart'
-    show ZebraScanner, ZebraScannerOptions, ZebraScannerVisionImage, BarcodeFormat;
+    show Barcode, BarcodeFormat, ZebraScanner, ZebraScannerOptions, ZebraScannerVisionImage;
 import 'package:zebra_scanner_example/scanner_utils.dart' show ScannerUtils;
 
 void main() => runApp(MyApp());
@@ -111,9 +111,9 @@ class _MyAppState extends State<MyApp> {
         detectInImage: _scanner.detectInImage,
         imageRotation: _sensorOrientation,
       ).then(
-        (dynamic result) {
+        (result) {
           _handleResult(
-            barcodes: result,
+            barcode: result,
             imageSize: Size(image.width.toDouble(), image.height.toDouble()),
           );
         },
@@ -121,11 +121,13 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _handleResult({barcodes, Size imageSize}) {
-    if (barcodes != null) {
+  void _handleResult({Barcode barcode, Size imageSize}) {
+    if (barcode != null) {
       if (!_cameraController.value.isStreamingImages) return;
+      print("points: ${barcode.points}");
+      print("points.length: ${barcode.points.length}");
       setState(() {
-        _barcode = barcodes;
+        _barcode = barcode.displayValue;
       });
       _cameraController.stopImageStream();
     }

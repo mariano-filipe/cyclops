@@ -1,6 +1,30 @@
 part of zebra_scanner;
 
-class Barcode {}
+class Barcode {
+  final String displayValue;
+  final String rawValue;
+  final BarcodeFormat format;
+  final List<Offset> points;
+
+  Barcode._({
+    @required rawValue,
+    displayValue,
+    @required format,
+    points,
+  })  : this.rawValue = rawValue,
+        this.displayValue = displayValue,
+        this.format = format,
+        this.points = points;
+
+  factory Barcode.fromMap(data) {
+    return Barcode._(
+      rawValue: data['rawValue'],
+      displayValue: data['rawValue'],
+      format: BarcodeFormat._(data['format']),
+      points: data['points'].map((point) => Offset(point[0], point[1])).toList().cast<Offset>(),
+    );
+  }
+}
 
 class BarcodeFormat {
   const BarcodeFormat._(this.value);
