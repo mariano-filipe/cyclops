@@ -75,7 +75,15 @@ public class ZebraScannerPlugin implements MethodCallHandler {
       String imgPath = call.argument("path");
 
       Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
-      return this.detectInBitmap(bitmap);
+      Map<String, Object> result = this.detectInBitmap(bitmap);
+      // If nothing was found, try again in opposite orientation (horizontal <->
+      // vertical). This could be enabled for both image types, but performance is
+      // more critical when using bytes because the image is probably coming from
+      // camera image stream.
+      if (result == null) {
+        result = this.detectInBitmap(Utils.rotateBitmap(bitmap, 90));
+      }
+      return result;
     } else if (imgType.equals("bytes")) {
       byte[] bytes = call.argument("bytes");
       Map<String, Object> metadata = call.argument("metadata");
