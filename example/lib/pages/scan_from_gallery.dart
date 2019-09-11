@@ -17,8 +17,7 @@ class _ScanFromGalleryPageState extends State<ScanFromGalleryPage> {
   TextEditingController _barcodeFieldController = TextEditingController();
   Future _initializeScanner;
   ZebraScanner _scanner;
-  ZebraScannerOptions _options =
-      ZebraScannerOptions(barcodeFormats: BarcodeFormat.ean13 | BarcodeFormat.ean8);
+  ZebraScannerOptions _options = ZebraScannerOptions(barcodeFormats: BarcodeFormat.all);
 
   @override
   void didChangeDependencies() {
@@ -96,30 +95,24 @@ class _ScanFromGalleryPageState extends State<ScanFromGalleryPage> {
         _barcode = barcode;
       });
       _barcodeFieldController.text = barcode?.displayValue;
-      print("barcode?.displayValue: ${barcode?.displayValue}");
     });
   }
 
   _buildBarcodeField() {
-    Widget header;
+    String header;
     if (_image == null) {
-      header = Text("Select an image to start scanning.", textAlign: TextAlign.center);
+      header = "Select an image to start scanning.";
+    } else if (_barcode == null) {
+      header = "Couldn't find any barcode in the image. Try again with another one.";
     } else {
-      if (_barcode == null) {
-        header = Text(
-          "Couldn't find any barcode in the image. Try again with another one.",
-          textAlign: TextAlign.center,
-        );
-      } else {
-        header = Text("YAY! We found a barcode:", textAlign: TextAlign.center);
-      }
+      header = "YAY! Found a barcode:";
     }
 
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          header,
+          Text(header, textAlign: TextAlign.center),
           SizedBox(height: 16),
           TextField(
             controller: _barcodeFieldController,
