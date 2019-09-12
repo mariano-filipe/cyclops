@@ -1,4 +1,4 @@
-package com.example.zebra_scanner_example;
+package com.example.cyclops_example;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

@@ -1,9 +1,9 @@
 import 'package:camera/camera.dart'
     show CameraController, CameraDescription, CameraLensDirection, CameraPreview, ResolutionPreset;
 import 'package:flutter/material.dart';
-import 'package:zebra_scanner_example/scanner_utils.dart' show ScannerUtils;
-import 'package:zebra_scanner/zebra_scanner.dart'
-    show BarcodeFormat, ZebraScanner, ZebraScannerOptions;
+import 'package:cyclops_example/scanner_utils.dart' show ScannerUtils;
+import 'package:cyclops/cyclops.dart'
+    show BarcodeFormat, BarcodeScanner, BarcodeScannerOptions;
 
 class ScanFromCameraPage extends StatefulWidget {
   @override
@@ -14,8 +14,8 @@ class _ScanFromCameraPageState extends State<ScanFromCameraPage> {
   CameraController _controller;
   String _barcode;
   TextEditingController _barcodeFieldController = TextEditingController();
-  ZebraScanner _scanner;
-  ZebraScannerOptions _options = ZebraScannerOptions(barcodeFormats: BarcodeFormat.all);
+  BarcodeScanner _scanner;
+  BarcodeScannerOptions _options = BarcodeScannerOptions(barcodeFormats: BarcodeFormat.all);
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _ScanFromCameraPageState extends State<ScanFromCameraPage> {
   }
 
   Future initScanner() async {
-    _scanner = ZebraScanner(_options);
+    _scanner = BarcodeScanner(_options);
     await _scanner.initialize();
   }
 

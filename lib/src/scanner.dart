@@ -1,18 +1,18 @@
-part of zebra_scanner;
+part of cyclops;
 
-class ZebraScanner {
-  static const MethodChannel _channel = const MethodChannel('zebra_scanner');
-  final ZebraScannerOptions options;
+class BarcodeScanner {
+  static const MethodChannel _channel = const MethodChannel('cyclops');
+  final BarcodeScannerOptions options;
   bool isInitialized = false;
 
-  ZebraScanner(this.options);
+  BarcodeScanner(this.options);
 
   Future<void> initialize() async {
     await _channel.invokeMethod('initialize', options.serialize());
     isInitialized = true;
   }
 
-  Future<Barcode> detectInImage(ZebraScannerVisionImage image) async {
+  Future<Barcode> detectInImage(CyclopsVisionImage image) async {
     assert(isInitialized, "the scanner was instantiated but not initialized");
 
     final Map<String, dynamic> reply = await _channel.invokeMapMethod('detectInImage', image.serialize());
@@ -25,10 +25,10 @@ class ZebraScanner {
   }
 }
 
-class ZebraScannerOptions {
+class BarcodeScannerOptions {
   final barcodeFormats;
 
-  ZebraScannerOptions({this.barcodeFormats = BarcodeFormat.all});
+  BarcodeScannerOptions({this.barcodeFormats = BarcodeFormat.all});
 
   Map<String, dynamic> serialize() => <String, dynamic>{
         'barcodeFormats': barcodeFormats.value,

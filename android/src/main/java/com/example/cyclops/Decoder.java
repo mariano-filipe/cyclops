@@ -1,4 +1,4 @@
-package com.example.zebra_scanner;
+package com.example.cyclops;
 
 import android.graphics.Color;
 import android.graphics.ImageFormat;

@@ -1,6 +1,6 @@
-# zebra_scanner_example
+# cyclops_example
 
-Demonstrates how to use the zebra_scanner plugin.
+Demonstrates how to use the cyclops plugin.
 
 ## Getting Started
 

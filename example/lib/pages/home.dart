@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:zebra_scanner_example/pages/scan_from_camera.dart' show ScanFromCameraPage;
-import 'package:zebra_scanner_example/pages/scan_from_gallery.dart' show ScanFromGalleryPage;
+import 'package:cyclops_example/pages/scan_from_camera.dart' show ScanFromCameraPage;
+import 'package:cyclops_example/pages/scan_from_gallery.dart' show ScanFromGalleryPage;
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Zebra Scanner Example"),
+          title: Text("Cyclops Example"),
           bottom: TabBar(
             tabs: <Widget>[
               Tab(icon: Icon(Icons.photo_library)),

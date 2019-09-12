@@ -1,4 +1,4 @@
-package com.example.zebra_scanner;
+package com.example.cyclops;
 
 class DecodedImage {
   public int[] pixels;

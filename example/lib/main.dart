@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:zebra_scanner_example/pages/home.dart';
+import 'package:cyclops_example/pages/home.dart';
 
 void main() => runApp(App());
 

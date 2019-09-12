@@ -1,4 +1,4 @@
-package com.example.zebra_scanner;
+package com.example.cyclops;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat; // [DEBUG]
@@ -27,7 +27,7 @@ class Utils {
     myDir.mkdirs();
 
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-    String fname = "ZebraScanner-" + timeStamp + ".png";
+    String fname = "Cyclops-" + timeStamp + ".png";
 
     File file = new File(myDir, fname);
     if (file.exists())

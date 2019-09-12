@@ -1,4 +1,4 @@
-package com.example.zebra_scanner;
+package com.example.cyclops;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 
-/** ZebraScannerPlugin */
-public class ZebraScannerPlugin implements MethodCallHandler {
+/** CyclopsPlugin */
+public class CyclopsPlugin implements MethodCallHandler {
   private MultiFormatReader detector = new MultiFormatReader();
   private Decoder decoder = new Decoder();
 
@@ -100,8 +100,8 @@ public class ZebraScannerPlugin implements MethodCallHandler {
     // registrar.activity().requestPermissions(new String[] {
     // Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1);
 
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "zebra_scanner");
-    channel.setMethodCallHandler(new ZebraScannerPlugin());
+    final MethodChannel channel = new MethodChannel(registrar.messenger(), "cyclops");
+    channel.setMethodCallHandler(new CyclopsPlugin());
   }
 
   @Override

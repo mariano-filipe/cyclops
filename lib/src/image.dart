@@ -1,13 +1,13 @@
-part of zebra_scanner;
+part of cyclops;
 
 enum _ImageType { file, bytes }
 
 enum ImageRotation { rotation0, rotation90, rotation180, rotation270 }
 
-class ZebraScannerVisionImage {
-  ZebraScannerVisionImage._({
+class CyclopsVisionImage {
+  CyclopsVisionImage._({
     @required _ImageType type,
-    ZebraScannerVisionImageMetadata metadata,
+    CyclopsVisionImageMetadata metadata,
     File imageFile,
     Uint8List bytes,
   })  : _imageFile = imageFile,
@@ -15,29 +15,29 @@ class ZebraScannerVisionImage {
         _bytes = bytes,
         _type = type;
 
-  factory ZebraScannerVisionImage.fromFile(File imageFile) {
+  factory CyclopsVisionImage.fromFile(File imageFile) {
     assert(imageFile != null);
-    return ZebraScannerVisionImage._(
+    return CyclopsVisionImage._(
       type: _ImageType.file,
       imageFile: imageFile,
     );
   }
 
-  factory ZebraScannerVisionImage.fromFilePath(String imagePath) {
+  factory CyclopsVisionImage.fromFilePath(String imagePath) {
     assert(imagePath != null);
-    return ZebraScannerVisionImage._(
+    return CyclopsVisionImage._(
       type: _ImageType.file,
       imageFile: File(imagePath),
     );
   }
 
-  factory ZebraScannerVisionImage.fromBytes(
+  factory CyclopsVisionImage.fromBytes(
     Uint8List bytes,
-    ZebraScannerVisionImageMetadata metadata,
+    CyclopsVisionImageMetadata metadata,
   ) {
     assert(bytes != null);
     assert(metadata != null);
-    return ZebraScannerVisionImage._(
+    return CyclopsVisionImage._(
       type: _ImageType.bytes,
       bytes: bytes,
       metadata: metadata,
@@ -46,7 +46,7 @@ class ZebraScannerVisionImage {
 
   final Uint8List _bytes;
   final File _imageFile;
-  final ZebraScannerVisionImageMetadata _metadata;
+  final CyclopsVisionImageMetadata _metadata;
   final _ImageType _type;
 
   Map<String, dynamic> serialize() => <String, dynamic>{
@@ -57,8 +57,8 @@ class ZebraScannerVisionImage {
       };
 }
 
-class ZebraScannerVisionImageMetadata {
-  ZebraScannerVisionImageMetadata({
+class CyclopsVisionImageMetadata {
+  CyclopsVisionImageMetadata({
     @required this.size,
     @required this.rawFormat,
     @required this.planeData,
@@ -74,7 +74,7 @@ class ZebraScannerVisionImageMetadata {
 
   final dynamic rawFormat;
 
-  final List<ZebraScannerVisionImagePlaneMetadata> planeData;
+  final List<CyclopsVisionImagePlaneMetadata> planeData;
 
   int _imageRotationToInt(ImageRotation rotation) {
     switch (rotation) {
@@ -96,13 +96,13 @@ class ZebraScannerVisionImageMetadata {
         'rotation': _imageRotationToInt(rotation),
         'rawFormat': rawFormat,
         'planeData': planeData
-            .map((ZebraScannerVisionImagePlaneMetadata plane) => plane._serialize())
+            .map((CyclopsVisionImagePlaneMetadata plane) => plane._serialize())
             .toList(),
       };
 }
 
-class ZebraScannerVisionImagePlaneMetadata {
-  ZebraScannerVisionImagePlaneMetadata({
+class CyclopsVisionImagePlaneMetadata {
+  CyclopsVisionImagePlaneMetadata({
     @required this.bytesPerRow,
     this.bytesPerPixel,
     @required this.height,

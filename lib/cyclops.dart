@@ -1,5 +1,5 @@
 /// This library can be used to scan barcodes in images coming either from the gallery or the camera
-library zebra_scanner;
+library cyclops;
 
 import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;

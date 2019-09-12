@@ -1,11 +1,11 @@
-#import "ZebraScannerPlugin.h"
+#import "CyclopsPlugin.h"
 
-@implementation ZebraScannerPlugin
+@implementation CyclopsPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"zebra_scanner"
+      methodChannelWithName:@"cyclops"
             binaryMessenger:[registrar messenger]];
-  ZebraScannerPlugin* instance = [[ZebraScannerPlugin alloc] init];
+  CyclopsPlugin* instance = [[CyclopsPlugin alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];
 }
 

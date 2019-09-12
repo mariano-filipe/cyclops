@@ -1,4 +1,4 @@
-part of zebra_scanner;
+part of cyclops;
 
 class Barcode {
   final String displayValue;

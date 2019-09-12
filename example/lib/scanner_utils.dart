@@ -8,7 +8,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
-import 'package:zebra_scanner/zebra_scanner.dart';
+import 'package:cyclops/cyclops.dart';
 
 class ScannerUtils {
   ScannerUtils._();
@@ -23,11 +23,11 @@ class ScannerUtils {
 
   static Future<dynamic> detect({
     @required CameraImage image,
-    @required Future<dynamic> Function(ZebraScannerVisionImage image) detectInImage,
+    @required Future<dynamic> Function(CyclopsVisionImage image) detectInImage,
     @required int imageRotation,
   }) async {
     return detectInImage(
-      ZebraScannerVisionImage.fromBytes(
+      CyclopsVisionImage.fromBytes(
         _concatenatePlanes(image.planes),
         _buildMetaData(image, _rotationIntToImageRotation(imageRotation)),
       ),
@@ -42,17 +42,17 @@ class ScannerUtils {
     return allBytes.done().buffer.asUint8List();
   }
 
-  static ZebraScannerVisionImageMetadata _buildMetaData(
+  static CyclopsVisionImageMetadata _buildMetaData(
     CameraImage image,
     ImageRotation rotation,
   ) {
-    return ZebraScannerVisionImageMetadata(
+    return CyclopsVisionImageMetadata(
       rawFormat: image.format.raw,
       size: Size(image.width.toDouble(), image.height.toDouble()),
       rotation: rotation,
       planeData: image.planes.map(
         (Plane plane) {
-          return ZebraScannerVisionImagePlaneMetadata(
+          return CyclopsVisionImagePlaneMetadata(
             bytesPerRow: plane.bytesPerRow,
             bytesPerPixel: plane.bytesPerPixel,
             height: plane.height,

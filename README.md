@@ -1,14 +1,7 @@
-# zebra_scanner
+# Cyclops
 
-A new flutter plugin project.
+Cyclops is a flutter plugin that exposes native libraries for barcode scanning.
 
-## Getting Started
+For now, there's only the implementation for Android devices using the [zxing-core](https://github.com/zxing/zxing) library.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Any help with an implementation for iOS devices is appreciated.

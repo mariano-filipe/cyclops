@@ -3,8 +3,8 @@ import 'dart:io' show File;
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
-import 'package:zebra_scanner/zebra_scanner.dart'
-    show Barcode, BarcodeFormat, ZebraScanner, ZebraScannerOptions, ZebraScannerVisionImage;
+import 'package:cyclops/cyclops.dart'
+    show Barcode, BarcodeFormat, BarcodeScanner, BarcodeScannerOptions, CyclopsVisionImage;
 
 class ScanFromGalleryPage extends StatefulWidget {
   @override
@@ -16,12 +16,12 @@ class _ScanFromGalleryPageState extends State<ScanFromGalleryPage> {
   Barcode _barcode;
   TextEditingController _barcodeFieldController = TextEditingController();
   Future _initializeScanner;
-  ZebraScanner _scanner;
-  ZebraScannerOptions _options = ZebraScannerOptions(barcodeFormats: BarcodeFormat.all);
+  BarcodeScanner _scanner;
+  BarcodeScannerOptions _options = BarcodeScannerOptions(barcodeFormats: BarcodeFormat.all);
 
   @override
   void didChangeDependencies() {
-    _scanner = ZebraScanner(_options);
+    _scanner = BarcodeScanner(_options);
     _initializeScanner = _scanner.initialize();
 
     super.didChangeDependencies();
@@ -90,7 +90,7 @@ class _ScanFromGalleryPageState extends State<ScanFromGalleryPage> {
 
   void _detectBarcodeInImage(File image) async {
     await _initializeScanner;
-    _scanner.detectInImage(ZebraScannerVisionImage.fromFile(image)).then((barcode) {
+    _scanner.detectInImage(CyclopsVisionImage.fromFile(image)).then((barcode) {
       setState(() {
         _barcode = barcode;
       });
